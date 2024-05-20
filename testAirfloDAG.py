@@ -5,15 +5,15 @@ from datetime import datetime
 
 
 default_args = {
-    'owner': 'Azure',
+    'owner': 'Airflow',
     'start_date': datetime(2024, 4, 15),
     'retries': 1,
 }
 
 dag = DAG(
-    'Azure_DAG_Test',
+    'Airflow_test',
     default_args=default_args,
-    schedule_interval='@daily'
+    schedule_interval='@weekly'
 )
 
 task1 = EmptyOperator(task_id='task1', dag=dag)
