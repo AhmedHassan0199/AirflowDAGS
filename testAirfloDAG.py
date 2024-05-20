@@ -11,7 +11,7 @@ default_args = {
 }
 
 dag = DAG(
-    'Airflow_test',
+    'Airflow_Sample_Dag',
     default_args=default_args,
     schedule_interval='@weekly'
 )
