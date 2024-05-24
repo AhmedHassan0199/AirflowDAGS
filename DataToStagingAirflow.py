@@ -28,7 +28,7 @@ def TruncateStagingTable(engine,tableName):
 
     
 
-with DAG("Data To Staging",start_date=datetime(2024,5,24)
+with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
          ,schedule="@daily",description="Collecting data from CSV source to Staging Table"
          ,tags=["Amazon Sales","Staging"],catchup=False):
     
