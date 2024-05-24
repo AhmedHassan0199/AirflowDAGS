@@ -1,11 +1,8 @@
 from datetime import datetime,timedelta
-from sqlalchemy import create_engine,ForeignKey,Column,String,Integer,CHAR,engine,MetaData
-from sqlalchemy.ext.declarative import declarative_base
-import pyodbc
+from sqlalchemy import create_engine
 import urllib
 import pandas as pd
-from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions,ContainerClient
-from openpyxl import load_workbook
+from azure.storage.blob import generate_blob_sas, BlobSasPermissions
 from tqdm import tqdm
 import numpy as np
 
