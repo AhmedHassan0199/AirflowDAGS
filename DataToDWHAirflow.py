@@ -116,7 +116,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         context = get_current_context()
         context["my_custom_map_index"] = f"Filling : {DimName}"
         print(f"Filling : {DimName}")
-        Base.metadata.create_all(bind=SQLengine)
+
         if UseMaxID:
             uniqueValues = GetMaxID(IdColumn,DimName,SQLengine)
         else:
@@ -188,7 +188,6 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
     @task
     def FillFact(FactName,SQLengine,StagingTableName,NeededColumns,FactClass,DimTables,FactMainColumns,AllFactDimIDs):
         print(f"Filling : {FactName}")
-        Base.metadata.create_all(bind=SQLengine)
         
         rows = GetStagingDataFact(SQLengine,StagingTableName,NeededColumns)
         
@@ -243,6 +242,6 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
     ('DimCustomer','customer_key','cust_id',int),
     ('DimOrderDetails','order_details_key','order_key',int)
             ]
-    
+    Base.metadata.create_all(bind=engine_azure)
     FillDimension.expand_kwargs(dim_params) >> FillFact('FactOrder',engine_azure,'AmazonSalesStaging',['item_id', 'order_date', 'cust_id', 'order_key','total'],Order,DimTables,['total'],['product_id', 'date_id', 'customer_key', 'order_details_key'])
     
