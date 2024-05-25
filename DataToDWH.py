@@ -195,7 +195,7 @@ def FillFact(FactName,SQLengine,StagingTableName,NeededColumns,FactClass,DimTabl
 
 # FillDimension('order_key','DimOrderDetails',engine_azure,'AmazonSalesStaging',['order_key', 'order_id', 'status', 'qty_ordered', 'value', 'discount_amount', 'payment_method', 'bi_st', 'ref_num', 'Discount_Percent'],OrderDetails,UseMaxID=True)
 
-# FillDimension('cust_id','DimCustomer',engine_azure,'AmazonSalesStaging',['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.'],Customer,UseMaxID=False)
+# FillDimension('cust_id','DimCustomer',engine_azure,'AmazonSalesStaging',['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.','User Name'],Customer,UseMaxID=False)
 
 DimTables = [
     ('DimProduct','product_id','item_id',str),

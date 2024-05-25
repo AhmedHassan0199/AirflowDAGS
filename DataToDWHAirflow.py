@@ -229,7 +229,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                 'StagingTableName': 'AmazonSalesStaging',
                 'IdColumn': 'cust_id',
                 'DimName': 'DimCustomer',
-                'DimColumns': ['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.'],
+                'DimColumns': ['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.','User Name'],
                 'DimClass': Customer,
                 'UseMaxID': False
             }
