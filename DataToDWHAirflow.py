@@ -22,9 +22,9 @@ def getSQLengine():
 
 with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
          ,schedule="@daily",description="Collecting data from Staging table to DWH Tables"
-         ,tags=["Amazon Sales","Staging"],catchup=False):
+         ,tags=["Amazon Sales","Data Warehousing"],catchup=False):
     
-    @task
+
     def GetMaxID(IdColumn,tableName,SQLengine):
         con = SQLengine.connect()
         try:
@@ -35,7 +35,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
             print("No data found in table")
             return "NoData"
     
-    @task
+
     def GetCurrentDataInTable(IdColumn,tableName,SQLengine):
         con = SQLengine.connect()
         values=list()
@@ -48,7 +48,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
             print("No data found in table")
             return values
         
-    @task
+
     def GetStagingDataDimension(SQLengine,StagingTableName,columns,IDcolumn,DimClass,uniquValues):
         con = SQLengine.connect()
         columns_str = '],['.join(columns)
