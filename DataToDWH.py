@@ -18,7 +18,7 @@ def parse_date(date_str):
 
 # Get Database Engine
 def getSQLengine():
-    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
+    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server-ezz.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
     params = urllib.parse.quote_plus(conn)
     conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
     engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)

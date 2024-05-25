@@ -8,8 +8,8 @@ import numpy as np
 
 def ReadCSVfromAureBlob(blobName):
     #Azure Credentials
-    account_name="ezz0barq"
-    account_key="5EoiGYry76XUlTCCxXGselpw9D3PVxPTZAJJG13hZIuV6Qg7OZDKuHvCJLKJj+qi3/PD+rbbeSSp+ASt5faqbA=="
+    account_name="ezz1barq"
+    account_key="dHBIr3E4586SZzI3eOxoGX38GcLscm4OP6TwQPI/no6OrE5PfZDHSYc4prWaYOXqu/mivb/BnYPK+AStzfRPpA=="
     container_name="barq-container"
     required_blob_name = blobName
     sas = generate_blob_sas(account_name = account_name,
@@ -24,7 +24,7 @@ def ReadCSVfromAureBlob(blobName):
     return df
 
 def getSQLengine():
-    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
+    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server-ezz.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
     params = urllib.parse.quote_plus(conn)
     conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
     engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)
