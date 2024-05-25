@@ -92,7 +92,6 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         DataFrame = pd.DataFrame.from_records([o.to_dict() for o in Objects])
         return DataFrame
     
-    @task
     def SaveDataframeToSQLtable(DataFrame,tableName,SQLengine):
         if len(DataFrame) > 0:
             batch_size = int(math.ceil(len(DataFrame) * 0.1))
@@ -224,6 +223,15 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                 'DimColumns': ['order_key', 'order_id', 'status', 'qty_ordered', 'value', 'discount_amount', 'payment_method', 'bi_st', 'ref_num', 'Discount_Percent'],
                 'DimClass': OrderDetails,
                 'UseMaxID': True
+            },
+            {
+                'SQLengine': engine_azure,
+                'StagingTableName': 'AmazonSalesStaging',
+                'IdColumn': 'cust_id',
+                'DimName': 'DimCustomer',
+                'DimColumns': ['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.'],
+                'DimClass': Customer,
+                'UseMaxID': False
             }
     ]
     FillDimension.expand_kwargs(dim_params)
