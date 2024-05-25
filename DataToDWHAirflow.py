@@ -22,7 +22,7 @@ def getSQLengine():
 ####################
 
 with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
-         ,schedule="@daily",description="Collecting data from Staging table to DWH Tables"
+         ,schedule=None,description="Collecting data from Staging table to DWH Tables"
          ,tags=["Amazon Sales","Data Warehousing"],catchup=False):
     
 
@@ -124,7 +124,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         productsDataFrame = GetStagingDataDimension(SQLengine,StagingTableName,DimColumns,IdColumn,DimClass,uniqueValues)
         SaveDataframeToSQLtable(productsDataFrame,DimName,SQLengine)
 
-    @task
+
     def GetDimensionTablesInDictionary(SQLengine, DimTables):
         Dimensions = dict()
         con = SQLengine.connect()
@@ -137,7 +137,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                 Dimensions[DimName][0][row[NeededDimColumn]] = row[DimID]
         return Dimensions
     
-    @task
+
     def GetStagingDataFact(SQLengine,StagingTableName,NeededColumns):
         con = SQLengine.connect()
         columns_str = '],['.join(NeededColumns)
@@ -145,7 +145,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         rows = con.execute(query)
         return rows
     
-    @task
+
     def GetFactDataFrame(rows,Dimensions,FactMainColumns,FactClass,FactData):
         factRecords = []
         for row in tqdm(rows):
@@ -171,7 +171,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         factRecords_df = pd.DataFrame.from_records([f.to_dict() for f in factRecords])
         return factRecords_df
     
-    @task
+
     def GetCurrentFactRecordsInDictionary(SQLengine,FactName,FactIDs):
         FactData = dict()
         con = SQLengine.connect()
@@ -237,5 +237,12 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                 'UseMaxID': False
             }
     ]
-    FillDimension.expand_kwargs(dim_params)
+    DimTables = [
+    ('DimProduct','product_id','item_id',str),
+    ('DimDate','date_id','order_date',datetime.date),
+    ('DimCustomer','customer_key','cust_id',int),
+    ('DimOrderDetails','order_details_key','order_key',int)
+            ]
+    
+    FillDimension.expand_kwargs(dim_params) >> FillFact('FactOrder',engine_azure,'AmazonSalesStaging',['item_id', 'order_date', 'cust_id', 'order_key','total'],Order,DimTables,['total'],['product_id', 'date_id', 'customer_key', 'order_details_key'])
     
