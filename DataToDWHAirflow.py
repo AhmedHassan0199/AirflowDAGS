@@ -17,7 +17,7 @@ def getSQLengine():
     conn = Variable.get("connection_string")
     params = urllib.parse.quote_plus(conn)
     conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
-    engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)
+    engine_azure = create_engine(conn_str,echo=False,fast_executemany = True,connect_args={'timeout': 3600})
     return engine_azure
 ####################
 
