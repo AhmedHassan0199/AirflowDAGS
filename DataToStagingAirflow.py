@@ -53,20 +53,6 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
         except Exception as e:
             return ("ERROR IN TRUNCATE : " + str(e))
     @task
-    def GetNewRecords(engine,tableName,Dataframe):
-        con = engine.connect()
-        try:
-            rows = con.execute(f'SELECT item_id FROM {tableName}')
-            items = []
-            for row in rows:
-                items.append(row[0])
-            if items == None:
-                return Dataframe
-            else:
-                return Dataframe[ ~Dataframe['item_id'].isin(items)]
-        except Exception:
-            return Dataframe
-    @task
     def InsertNewRecordsOnly(df,batch_size,engine,tableName):
         print(f"New Records to be Added : {len(df)}")
         batch_size =int(len(df) * 0.1)
@@ -89,8 +75,7 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
     
     engine = getSQLengine()
     TruncateStagingTable(engine,"AmazonSalesStaging")
-    Current_DF = ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv")
-    New_Records_DF = GetNewRecords(engine,"AmazonSalesStaging",Current_DF)
-    InsertNewRecordsOnly(New_Records_DF,2500,engine,"AmazonSalesStaging")
+    df = ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv")
+    InsertNewRecordsOnly(df,2500,engine,"AmazonSalesStaging")
     
 
