@@ -10,7 +10,12 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.decorators import task
 
-
+def getSQLengine():
+    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server-ezz.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
+    params = urllib.parse.quote_plus(conn)
+    conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
+    engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)
+    return engine_azure
 
 
 
@@ -38,13 +43,7 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
         df = pd.read_csv(sas_url,dtype=str)
         df.insert(0, 'order_key', range(0, len(df)))
         return df
-    @task
-    def getSQLengine():
-        conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server-ezz.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
-        params = urllib.parse.quote_plus(conn)
-        conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
-        engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)
-        return engine_azure
+
     @task
     def TruncateStagingTable(engine,tableName):
         con = engine.connect()
@@ -87,6 +86,7 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
                 print(f'Error : {error}')
         else:
             print("No new records to be added")
+    
     engine = getSQLengine()
     TruncateStagingTable(engine,"AmazonSalesStaging")
     Current_DF = ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv")
