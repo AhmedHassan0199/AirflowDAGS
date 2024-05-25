@@ -10,6 +10,7 @@ from airflow.decorators import task
 from dateutil import parser
 import math
 from databaseClasses import Product,Date,Customer,OrderDetails,Order,Base
+from airflow.operators.python import get_current_context
 
 #Helping functions
 def getSQLengine():
@@ -110,8 +111,10 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         else:
             print("No new Data to be added")
     
-    @task
+    @task(map_index_template="{{ my_custom_map_index }}")
     def FillDimension(IdColumn,DimName,SQLengine,StagingTableName,DimColumns,DimClass,UseMaxID):
+        context = get_current_context()
+        context["my_custom_map_index"] = f"Filling : {DimName}"
         print(f"Filling : {DimName}")
         Base.metadata.create_all(bind=SQLengine)
         if UseMaxID:
