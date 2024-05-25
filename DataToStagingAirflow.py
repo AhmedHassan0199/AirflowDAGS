@@ -74,8 +74,6 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
             print("No new records to be added")
     
     engine = getSQLengine()
-    TruncateStagingTable(engine,"AmazonSalesStaging")
-    df = ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv")
-    InsertNewRecordsOnly(df,2500,engine,"AmazonSalesStaging")
+    TruncateStagingTable(engine,"AmazonSalesStaging") >> InsertNewRecordsOnly(ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv"),2500,engine,"AmazonSalesStaging")
     
 
