@@ -66,7 +66,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                 if type(uniquValues) == datetime:
                     rows = con.execute(f"SELECT [{columns_str}] FROM {StagingTableName} WHERE CONVERT(DATETIME, {IDcolumn}, 103) > '{uniquValues}'")
                 else:
-                    rows = con.execute(f"SELECT [{columns_str}] FROM {StagingTableName} WHERE {IDcolumn} > '{uniquValues}'")
+                    rows = con.execute(f"SELECT [{columns_str}] FROM {StagingTableName} WHERE {IDcolumn} > {uniquValues}")
             else:
                 rows = con.execute(f"SELECT [{columns_str}] FROM {StagingTableName}")
         Objects = list()
