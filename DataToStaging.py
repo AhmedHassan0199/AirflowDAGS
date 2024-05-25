@@ -36,7 +36,7 @@ def TruncateStagingTable(engine,tableName):
         con.execute(f'TRUNCATE TABLE {tableName}')
         return f"Done Truncate of {tableName}"
     except Exception as e:
-        return ("ERROR IN TRUNCATE : " + e)
+        return ("ERROR IN TRUNCATE : " + str(e))
 
 def GetNewRecords(engine,tableName,Dataframe):
     con = engine.connect()
