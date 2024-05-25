@@ -6,12 +6,11 @@ from azure.storage.blob import generate_blob_sas, BlobSasPermissions
 from tqdm import tqdm
 import numpy as np
 from airflow import DAG
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import PythonOperator
+from airflow.models import Variable
 from airflow.decorators import task
 
 def getSQLengine():
-    conn = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:azure-barq-sql-server-ezz.database.windows.net,1433;Database=Azure-SQL-Instance;Uid=azure-sql;Pwd=P@ssw0rd;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=-1;'
+    conn = Variable.get("connection_string")
     params = urllib.parse.quote_plus(conn)
     conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
     engine_azure = create_engine(conn_str,echo=False,fast_executemany = True)
@@ -29,9 +28,9 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
     @task
     def ReadCSVfromAureBlob(blobName):
         #Azure Credentials
-        account_name="ezz1barq"
-        account_key="dHBIr3E4586SZzI3eOxoGX38GcLscm4OP6TwQPI/no6OrE5PfZDHSYc4prWaYOXqu/mivb/BnYPK+AStzfRPpA=="
-        container_name="barq-container"
+        account_name=Variable.get("account_name")
+        account_key=Variable.get("account_key")
+        container_name=Variable.get("container_name")
         required_blob_name = blobName
         sas = generate_blob_sas(account_name = account_name,
                                 container_name = container_name,
