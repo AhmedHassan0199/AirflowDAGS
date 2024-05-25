@@ -8,6 +8,7 @@ import numpy as np
 from airflow import DAG
 from airflow.models import Variable
 from airflow.decorators import task
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 def getSQLengine():
     conn = Variable.get("connection_string")
@@ -72,7 +73,12 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
         else:
             print("No new records to be added")
     
+    triggerDWH = TriggerDagRunOperator(
+        task_id = 'trigger_DWH_DAG',
+        trigger_dag_id='Data_To_DWH'
+    )
+
     engine = getSQLengine()
-    TruncateStagingTable(engine,"AmazonSalesStaging") >> InsertNewRecordsOnly(ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv"),2500,engine,"AmazonSalesStaging")
+    TruncateStagingTable(engine,"AmazonSalesStaging") >> InsertNewRecordsOnly(ReadCSVfromAureBlob("AmazonSalesFY2020-21.csv"),2500,engine,"AmazonSalesStaging") >> triggerDWH
     
 
