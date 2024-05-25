@@ -47,7 +47,7 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
     def TruncateStagingTable(engine,tableName):
         con = engine.connect()
         try:
-            con.execute(f'TRUNCATE TABLE {tableName}').execution_options(autocommit=True)
+            con.execution_options(autocommit=True).execute(f'TRUNCATE TABLE {tableName}')
             return f"Done Truncate of {tableName}"
         except Exception as e:
             return ("ERROR IN TRUNCATE : " + str(e))
