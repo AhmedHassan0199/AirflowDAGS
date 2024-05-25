@@ -75,8 +75,7 @@ with DAG("Data_To_Staging",start_date=datetime(2024,5,24)
             batches = np.array_split(df,int(len(df)/batch_size))
             for batch in tqdm(batches):
                 try:
-                    with engine.connect() as connection:
-                        batch.to_sql(tableName,connection.connection,if_exists='append',index=False,method=None)
+                    batch.to_sql(tableName,engine,if_exists='append',index=False,method=None)
                 except Exception as e:
                     errors.append(e)
                     continue
