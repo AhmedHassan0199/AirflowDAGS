@@ -197,14 +197,34 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
         SaveDataframeToSQLtable(factRecords_df, FactName, SQLengine)
 
     engine_azure = getSQLengine()
-    FillDimension.partial(
-        SQLengine=engine_azure,
-        StagingTableName='AmazonSalesStaging'
-        ).expand(
-            IdColumn=['item_id','order_date','order_key','cust_id'],
-            DimName=['DimProduct','DimDate','DimOrderDetails','DimCustomer'],
-            DimColumns = [['item_id','price','sku','category'],['order_date','year','month'],['order_key', 'order_id', 'status', 'qty_ordered', 'value', 'discount_amount', 'payment_method', 'bi_st', 'ref_num', 'Discount_Percent'],['cust_id', 'Name Prefix', 'First Name', 'Middle Initial', 'Last Name', 'Gender', 'age', 'full_name', 'E Mail', 'Sign in date', 'Phone No.']],
-            DimClass = [Product,Date,OrderDetails,Customer],
-            UseMaxID = [True,True,True,False]
-            )
+    dim_params = [
+            {
+                'SQLengine': engine_azure,
+                'StagingTableName': 'AmazonSalesStaging',
+                'IdColumn': 'item_id',
+                'DimName': 'DimProduct',
+                'DimColumns': ['item_id', 'price', 'sku', 'category'],
+                'DimClass': Product,
+                'UseMaxID': True
+            },
+            {
+                'SQLengine': engine_azure,
+                'StagingTableName': 'AmazonSalesStaging',
+                'IdColumn': 'order_date',
+                'DimName': 'DimDate',
+                'DimColumns': ['order_date', 'year', 'month'],
+                'DimClass': Date,
+                'UseMaxID': True
+            },
+            {
+                'SQLengine': engine_azure,
+                'StagingTableName': 'AmazonSalesStaging',
+                'IdColumn': 'order_key',
+                'DimName': 'DimOrderDetails',
+                'DimColumns': ['order_key', 'order_id', 'status', 'qty_ordered', 'value', 'discount_amount', 'payment_method', 'bi_st', 'ref_num', 'Discount_Percent'],
+                'DimClass': OrderDetails,
+                'UseMaxID': True
+            }
+    ]
+    FillDimension.expand_kwargs(dim_params)
     
