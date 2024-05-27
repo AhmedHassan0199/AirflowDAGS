@@ -80,7 +80,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
                     if key in dataTypes:
                         data_type = dataTypes[key]
                         if data_type == datetime.date:
-                            value = parser.parse(value).date()
+                            value = parser.parse(value,dayfirst=True).date()
                         else:
                             value = data_type(value)
                         object_data [key] = value
@@ -154,7 +154,7 @@ with DAG("Data_To_DWH",start_date=datetime(2024,5,24)
             for Dimension in Dimensions:
                 data,NeededDimColumn,DimID,DimColumnDataType = Dimensions[Dimension]
                 if DimColumnDataType == datetime.date:
-                    valueInStaging = parser.parse(row[NeededDimColumn]).replace(hour=0, minute=0, second=0, microsecond=0)
+                    valueInStaging = parser.parse(row[NeededDimColumn],dayfirst=True).replace(hour=0, minute=0, second=0, microsecond=0)
                 else:
                     valueInStaging = DimColumnDataType(row[NeededDimColumn])
                 if len(FactData[DimID]) > 0 and data[valueInStaging] in FactData[DimID]:
